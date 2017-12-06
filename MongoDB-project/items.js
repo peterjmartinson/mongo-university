@@ -201,18 +201,30 @@ function ItemDAO(database) {
          *
          */
 
-        var item = this.createDummyItem();
-        var items = [];
-        for (var i=0; i<5; i++) {
-            items.push(item);
-        }
+        // var item = this.createDummyItem();
+        // var items = [];
+        // for (var i=0; i<5; i++) {
+        //     items.push(item);
+        // }
 
+        var search_terms = { "$regex" : query, "$options" : "i" };
+
+        var cursor = this.db.collection("item");
+        cursor.find({ title : search_terms });
+        cursor.sort({ _id : 1 });
+        cursor.skip( pages );
+        cursor.limit( itemsPerPage );
+
+        cursor.toArray(function(err, docs) {
+          assert.equal(null, err);
+          callback(docs);
+        });
         // TODO-lab2A Replace all code above (in this method).
 
         // TODO Include the following line in the appropriate
         // place within your code to pass the items for the selected page
         // of search results to the callback.
-        callback(items);
+        // callback(items);
     }
 
 
